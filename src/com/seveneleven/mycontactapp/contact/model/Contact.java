@@ -17,6 +17,7 @@ public abstract class Contact {
     private List<EmailAddress> emailAddresses;
     private LocalDateTime createdAt;
     private Set<Tag> tags = new HashSet<>();
+    
 
     protected Contact(String name,
                       List<PhoneNumber> phones,
@@ -55,6 +56,9 @@ public abstract class Contact {
     }
     public void addTag(Tag tag){
         tags.add(tag);
+    }
+    public void removeTag(Tag tag){
+        tags.remove(tag);
     }
     @Override
     public String toString() {

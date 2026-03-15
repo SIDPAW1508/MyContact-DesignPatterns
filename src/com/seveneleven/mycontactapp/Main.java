@@ -27,6 +27,8 @@ import com.seveneleven.mycontactapp.contact.search.SearchCriteria;
 import com.seveneleven.mycontactapp.contact.service.ContactManager;
 import com.seveneleven.mycontactapp.contact.tag.Tag;
 import com.seveneleven.mycontactapp.contact.tag.TagFactory;
+import com.seveneleven.mycontactapp.contact.tag.observer.TagUIObserver;
+import com.seveneleven.mycontactapp.contact.tag.service.TagManager;
 import com.seveneleven.mycontactapp.user.builder.*;
 import com.seveneleven.mycontactapp.user.factory.*;
 
@@ -106,8 +108,9 @@ public class Main {
             System.out.println("6 Search Contacts");
             System.out.println("7 Advanced Filtering");
             System.out.println("8.Manage Tags");
-            System.out.println("9.Profile Settings");
-            System.out.println("10. Logout");
+            System.out.println("9.Apply Tags to contact");            
+            System.out.println("10.Profile Settings");
+            System.out.println("11. Logout");
 
             System.out.print("Choose option: ");
             int choice = sc.nextInt();
@@ -424,9 +427,37 @@ public class Main {
                     System.out.println("Tag added successfully.");
 
                     break;
-                
+                case 9:
 
+                    if(contacts.isEmpty()){
+                        System.out.println("No contacts available.");
+                        break;
+                    }
 
+                    for(int i=0;i<contacts.size();i++){
+                        System.out.println((i+1)+". "+contacts.get(i).getName());
+                    }
+
+                    System.out.print("Select contact: ");
+                    int idx = sc.nextInt();
+                    sc.nextLine();
+
+                    Contact selected11 = contacts.get(idx-1);
+
+                    System.out.print("Enter tag name: ");
+                    String tagName1 = sc.nextLine();
+
+                    Tag tag1 = TagFactory.getTag(tagName1);
+
+                    TagManager tagManager = new TagManager();
+                    tagManager.addObserver(new TagUIObserver());
+
+                    tagManager.applyTag(selected11, tag1);
+
+                    System.out.println("Tag applied successfully.");
+
+                    break;
+               
 
                 default:
                     System.out.println("Invalid option.");
