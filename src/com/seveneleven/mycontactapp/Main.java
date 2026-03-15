@@ -1,12 +1,20 @@
 
 package com.seveneleven.mycontactapp;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import com.seveneleven.mycontactapp.user.model.*;
 import com.seveneleven.mycontactapp.user.validation.*;
 import com.seveneleven.mycontactapp.contact.builder.ContactBuilder;
 import com.seveneleven.mycontactapp.contact.factory.ContactFactory;
+import com.seveneleven.mycontactapp.contact.filter.CompositeFilter;
+import com.seveneleven.mycontactapp.contact.filter.DateFilter;
+import com.seveneleven.mycontactapp.contact.filter.FilterService;
+import com.seveneleven.mycontactapp.contact.filter.TagFilter;
+import com.seveneleven.mycontactapp.contact.filter.strategy.SortByDateStrategy;
+import com.seveneleven.mycontactapp.contact.filter.strategy.SortByNameStrategy;
+import com.seveneleven.mycontactapp.contact.filter.strategy.SortStrategy;
 import com.seveneleven.mycontactapp.contact.model.Contact;
 import com.seveneleven.mycontactapp.contact.model.EmailAddress;
 import com.seveneleven.mycontactapp.contact.model.PhoneNumber;
@@ -93,10 +101,10 @@ public class Main {
             System.out.println("3 Edit Contact");
             System.out.println("4 Delete Contact");
             System.out.println("5 Bulk Delete (name starts with)");
-            
             System.out.println("6 Search Contacts");
-            System.out.println("7 Profile Settings");
-            System.out.println("8 Logout");
+            System.out.println("7 Advanced Filtering");
+            System.out.println("8.Profile Settings");
+            System.out.println("9. Logout");
 
             System.out.print("Choose option: ");
             int choice = sc.nextInt();
@@ -340,11 +348,53 @@ public class Main {
 
                     break;
                
-
                 case 7:
-                    running = false;
-                    System.out.println("Logged out.");
+
+                    if(contacts.isEmpty()){
+                        System.out.println("No contacts available.");
+                        break;
+                    }
+
+                    CompositeFilter filter = new CompositeFilter();
+
+                    System.out.print("Filter by name keyword (or blank): ");
+                    String keyword = sc.nextLine();
+
+                    if(!keyword.isBlank()){
+                        filter.addFilter(new TagFilter(keyword));
+                    }
+
+                    System.out.print("Filter contacts added after year (0 to skip): ");
+                    int year = sc.nextInt();
+                    sc.nextLine();
+
+                    if(year > 0){
+                        filter.addFilter(
+                                new DateFilter(LocalDate.of(year,1,1)));
+                    }
+
+                    List<Contact> filtered =
+                            FilterService.filterContacts(contacts, filter);
+
+                    System.out.println("Sort by:");
+                    System.out.println("1 Name");
+                    System.out.println("2 Date");
+
+                    int sortChoice = sc.nextInt();
+                    sc.nextLine();
+
+                    SortStrategy strategy =
+                            (sortChoice == 1)
+                            ? new SortByNameStrategy()
+                            : new SortByDateStrategy();
+
+                    strategy.sort(filtered);
+
+                    filtered.forEach(System.out::println);
+
                     break;
+              
+
 
 
                 default:
