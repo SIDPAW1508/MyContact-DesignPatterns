@@ -2,8 +2,12 @@ package com.seveneleven.mycontactapp.contact.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import com.seveneleven.mycontactapp.contact.tag.Tag;
 
 public abstract class Contact {
 
@@ -12,6 +16,7 @@ public abstract class Contact {
     private List<PhoneNumber> phoneNumbers;
     private List<EmailAddress> emailAddresses;
     private LocalDateTime createdAt;
+    private Set<Tag> tags = new HashSet<>();
 
     protected Contact(String name,
                       List<PhoneNumber> phones,
@@ -47,6 +52,9 @@ public abstract class Contact {
     }
     public void setName(String name) {
         this.name = name;
+    }
+    public void addTag(Tag tag){
+        tags.add(tag);
     }
     @Override
     public String toString() {

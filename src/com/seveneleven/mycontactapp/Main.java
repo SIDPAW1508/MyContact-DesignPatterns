@@ -25,6 +25,8 @@ import com.seveneleven.mycontactapp.contact.search.NameCriteria;
 import com.seveneleven.mycontactapp.contact.search.PhoneCriteria;
 import com.seveneleven.mycontactapp.contact.search.SearchCriteria;
 import com.seveneleven.mycontactapp.contact.service.ContactManager;
+import com.seveneleven.mycontactapp.contact.tag.Tag;
+import com.seveneleven.mycontactapp.contact.tag.TagFactory;
 import com.seveneleven.mycontactapp.user.builder.*;
 import com.seveneleven.mycontactapp.user.factory.*;
 
@@ -103,8 +105,9 @@ public class Main {
             System.out.println("5 Bulk Delete (name starts with)");
             System.out.println("6 Search Contacts");
             System.out.println("7 Advanced Filtering");
-            System.out.println("8.Profile Settings");
-            System.out.println("9. Logout");
+            System.out.println("8.Manage Tags");
+            System.out.println("9.Profile Settings");
+            System.out.println("10. Logout");
 
             System.out.print("Choose option: ");
             int choice = sc.nextInt();
@@ -394,6 +397,34 @@ public class Main {
 
                     break;
               
+                case 8:
+
+                    if(contacts.isEmpty()){
+                        System.out.println("No contacts available.");
+                        break;
+                    }
+
+                    for(int i=0;i<contacts.size();i++){
+                        System.out.println((i+1)+". "+contacts.get(i).getName());
+                    }
+
+                    System.out.print("Select contact: ");
+                    int index = sc.nextInt();
+                    sc.nextLine();
+
+                    Contact selected1 = contacts.get(index-1);
+
+                    System.out.print("Enter tag to add: ");
+                    String tagName = sc.nextLine();
+
+                    Tag tag = TagFactory.getTag(tagName);
+
+                    selected1.addTag(tag);
+
+                    System.out.println("Tag added successfully.");
+
+                    break;
+                
 
 
 
