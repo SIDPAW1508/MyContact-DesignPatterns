@@ -44,4 +44,27 @@ public abstract class Contact {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Contact ID: ").append(id).append("\n");
+        sb.append("Name: ").append(name).append("\n");
+        sb.append("Type: ").append(getType()).append("\n");
+
+        sb.append("Phones:\n");
+        for (PhoneNumber p : phoneNumbers) {
+            sb.append("  ").append(p.getNumber()).append("\n");
+        }
+
+        sb.append("Emails:\n");
+        for (EmailAddress e : emailAddresses) {
+            sb.append("  ").append(e.getEmail()).append("\n");
+        }
+
+        sb.append("Created At: ").append(createdAt);
+
+        return sb.toString();
+    }
 }

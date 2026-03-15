@@ -11,6 +11,7 @@ import com.seveneleven.mycontactapp.contact.model.Contact;
 import com.seveneleven.mycontactapp.user.builder.*;
 import com.seveneleven.mycontactapp.user.command.*;
 import com.seveneleven.mycontactapp.user.factory.*;
+import com.seveneleven.mycontactapp.contact.display.*;
 
 public class Main {
 
@@ -78,47 +79,47 @@ public class Main {
 
 		while (managingProfile) {
 
-		    System.out.println("\n=== PROFILE MANAGEMENT ===");
-		    System.out.println("1. Update Name");
-		    System.out.println("2. Change Password");
-		    System.out.println("3. Continue");
+			System.out.println("\n=== PROFILE MANAGEMENT ===");
+			System.out.println("1. Update Name");
+			System.out.println("2. Change Password");
+			System.out.println("3. Continue");
 
-		    System.out.print("Choose option: ");
-		    int choice = sc.nextInt();
-		    sc.nextLine();
+			System.out.print("Choose option: ");
+			int choice = sc.nextInt();
+			sc.nextLine();
 
-		    switch (choice) {
+			switch (choice) {
 
-		        case 1:
-		            System.out.print("Enter new name: ");
-		            String newName = sc.nextLine();
+			case 1:
+				System.out.print("Enter new name: ");
+				String newName = sc.nextLine();
 
-		            ProfileCommand nameCmd =
-		                    new UpdateNameCommand(loggedUser, newName);
+				ProfileCommand nameCmd =
+						new UpdateNameCommand(loggedUser, newName);
 
-		            manager.executeCommand(nameCmd);
-		            break;
+				manager.executeCommand(nameCmd);
+				break;
 
-		        case 2:
-		            System.out.print("Enter old password: ");
-		            String oldPass = sc.nextLine();
+			case 2:
+				System.out.print("Enter old password: ");
+				String oldPass = sc.nextLine();
 
-		            System.out.print("Enter new password: ");
-		            String newPass = sc.nextLine();
+				System.out.print("Enter new password: ");
+				String newPass = sc.nextLine();
 
-		            ProfileCommand passCmd =
-		                    new ChangePasswordCommand(loggedUser, oldPass, newPass);
+				ProfileCommand passCmd =
+						new ChangePasswordCommand(loggedUser, oldPass, newPass);
 
-		            manager.executeCommand(passCmd);
-		            break;
+				manager.executeCommand(passCmd);
+				break;
 
-		        case 3:
-		            managingProfile = false;
-		            break;
+			case 3:
+				managingProfile = false;
+				break;
 
-		        default:
-		            System.out.println("Invalid option.");
-		    }
+			default:
+				System.out.println("Invalid option.");
+			}
 		}
 		/* ---------------- UC-04 CREATE CONTACT ---------------- */
 
@@ -160,13 +161,48 @@ public class Main {
 		/* ---- Create Contact ---- */
 		Contact contact = ContactFactory.createContact(type, contactBuilder);
 
-		
+
 		contacts.add(contact);
 
 		System.out.println("Contact Created Successfully!");
 		System.out.println("Contact ID: " + contact.getId());
 		System.out.println("Name: " + contact.getName());
 		System.out.println("Type: " + contact.getType());
+
+		/* ---------------- UC-05 VIEW CONTACT ---------------- */
+
+		System.out.println("\n=== VIEW CONTACT ===");
+
+		if (contacts.isEmpty()) {
+			System.out.println("No contacts available.");
+		} else {
+
+			System.out.println("Available Contacts:");
+
+			for (int i = 0; i < contacts.size(); i++) {
+				System.out.println((i + 1) + ". " + contacts.get(i).getName());
+			}
+
+			System.out.print("Select contact number: ");
+			int index = sc.nextInt();
+			sc.nextLine();
+
+			Optional<Contact> selected =
+					Optional.ofNullable(contacts.get(index - 1));
+
+			if (selected.isPresent()) {
+
+				ContactDisplay display =
+						new FancyDisplayDecorator(
+								new BasicContactDisplay(selected.get())
+								);
+
+				System.out.println(display.display());
+
+			} else {
+				System.out.println("Contact not found.");
+			}
+		}
 
 	}
 }
