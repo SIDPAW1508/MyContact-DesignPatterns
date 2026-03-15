@@ -1,6 +1,7 @@
 package com.seveneleven.mycontactapp.contact.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +45,9 @@ public abstract class Contact {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
     @Override
     public String toString() {
 
@@ -66,5 +70,15 @@ public abstract class Contact {
         sb.append("Created At: ").append(createdAt);
 
         return sb.toString();
+    }
+    public Contact(Contact other) {
+
+        this.id = other.id;
+        this.name = other.name;
+
+        this.phoneNumbers = new ArrayList<>(other.phoneNumbers);
+        this.emailAddresses = new ArrayList<>(other.emailAddresses);
+
+        this.createdAt = other.createdAt;
     }
 }
