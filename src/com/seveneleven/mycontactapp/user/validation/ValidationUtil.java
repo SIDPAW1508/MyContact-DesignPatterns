@@ -3,7 +3,6 @@ package com.seveneleven.mycontactapp.user.validation;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Pattern;
-
 import com.seveneleven.mycontactapp.exception.ValidationException;
 
 /**

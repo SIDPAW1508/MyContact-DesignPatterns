@@ -43,11 +43,10 @@ public abstract class User {
     }
 
     // Internal password verification
-    protected boolean checkPassword(String rawPassword) {
+    public boolean checkPassword(String rawPassword) {
         return ValidationUtil.hashPassword(rawPassword)
                 .equals(this.hashedPassword);
     }
-
     // Optional email update
     public void setEmail(String email) {
         ValidationUtil.validateEmail(email);

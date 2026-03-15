@@ -1,59 +1,70 @@
 package com.seveneleven.mycontactapp;
 
-import java.util.Scanner;
+import java.util.*;
 
-import com.seveneleven.mycontactapp.user.builder.UserBuilder;
-import com.seveneleven.mycontactapp.user.factory.UserFactory.UserType;
-import com.seveneleven.mycontactapp.user.model.User;
-import com.seveneleven.mycontactapp.exception.ValidationException;
+import com.seveneleven.mycontactapp.user.model.*;
+import com.seveneleven.mycontactapp.user.validation.*;
+import com.seveneleven.mycontactapp.user.builder.*;
+import com.seveneleven.mycontactapp.user.factory.*;
 
 public class Main {
 
+    private static Map<String, User> users = new HashMap<>();
+
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
-        try {
+        /* ---------------- UC-01 REGISTRATION ---------------- */
 
-            // User input
-            System.out.print("Enter Name: ");
-            String name = scanner.nextLine();
+        System.out.println("=== USER REGISTRATION ===");
 
-            System.out.print("Enter Email: ");
-            String email = scanner.nextLine();
+        System.out.println("Enter name:");
+        String name = sc.nextLine();
 
-            System.out.print("Enter Password: ");
-            String password = scanner.nextLine();
+        System.out.println("Enter email:");
+        String email = sc.nextLine();
 
-            System.out.print("Enter User Type (FREE/PREMIUM): ");
-            String typeInput = scanner.nextLine().toUpperCase();
+        System.out.println("Enter password:");
+        String password = sc.nextLine();
 
-            UserType userType = UserType.valueOf(typeInput);
+        String hashedPassword = ValidationUtil.hashPassword(password);
 
-            // Build user using Builder pattern
-            User user = new UserBuilder()
-                    .name(name)
-                    .email(email)
-                    .password(password)
-                    .type(userType)
-                    .build();
+        // Builder Pattern
+        UserBuilder builder = new UserBuilder()
+                .setName(name)
+                .setEmail(email)
+                .setPassword(hashedPassword);
 
-            // Print user details
-            printUserDetails(user);
+        // Factory Pattern
+        User user = UserFactory.createUser("FREE", builder);
 
-        } catch (ValidationException e) {
-            System.out.println("Validation error: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid user type. Please enter FREE or PREMIUM.");
-        } finally {
-            scanner.close();
+        // Store user
+        users.put(user.getEmail(), user);
+
+        System.out.println("Registration Successful!\n");
+
+
+        /* ---------------- UC-02 AUTHENTICATION ---------------- */
+
+        System.out.println("=== LOGIN ===");
+
+        System.out.println("Enter email:");
+        String loginEmail = sc.nextLine();
+
+        System.out.println("Enter password:");
+        String loginPassword = sc.nextLine();
+
+        AuthenticationStrategy auth = new BasicAuth(users);
+
+        Optional<User> loggedInUser =
+                auth.authenticate(loginEmail, loginPassword);
+
+        if (loggedInUser.isPresent()) {
+            System.out.println("Login Successful: " +
+                    loggedInUser.get().getName());
+        } else {
+            System.out.println("Invalid Credentials");
         }
-    }
-
-    private static void printUserDetails(User user) {
-        System.out.println("\nUser Details:");
-        System.out.println("Name: " + user.getName());
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Role: " + user.getRole());
     }
 }
