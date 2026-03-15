@@ -8,6 +8,8 @@ import com.seveneleven.mycontactapp.user.validation.*;
 import com.seveneleven.mycontactapp.contact.builder.ContactBuilder;
 import com.seveneleven.mycontactapp.contact.factory.ContactFactory;
 import com.seveneleven.mycontactapp.contact.model.Contact;
+import com.seveneleven.mycontactapp.contact.observer.ContactLogger;
+import com.seveneleven.mycontactapp.contact.service.ContactManager;
 import com.seveneleven.mycontactapp.user.builder.*;
 import com.seveneleven.mycontactapp.user.command.*;
 import com.seveneleven.mycontactapp.user.factory.*;
@@ -203,7 +205,41 @@ public class Main {
 				System.out.println("Contact not found.");
 			}
 		}
+		System.out.println("\n=== DELETE CONTACT ===");
 
+		if (contacts.isEmpty()) {
+			System.out.println("No contacts available.");
+		}
+		else {
+
+			for (int i = 0; i < contacts.size(); i++) {
+				System.out.println((i+1) + ". " + contacts.get(i).getName());
+			}
+
+			System.out.print("Select contact number to delete: ");
+			int index = sc.nextInt();
+			sc.nextLine();
+
+			Contact selected = contacts.get(index - 1);
+
+			System.out.print("Are you sure? (yes/no): ");
+			String confirm = sc.nextLine();
+
+			if(confirm.equalsIgnoreCase("yes")) {
+
+				ContactManager manager1 = new ContactManager(contacts);
+
+				manager1.addObserver(new ContactLogger());
+
+				manager1.deleteContact(selected);
+
+				System.out.println("Contact deleted successfully.");
+
+			}
+			else {
+				System.out.println("Deletion cancelled.");
+			}
+		}
 	}
 }
 
